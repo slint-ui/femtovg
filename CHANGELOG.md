@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.20.3] - 2026-02-18
+
+- Upgraded swash to the latest version.
+
 ## [0.20.2] - 2026-02-18
 
 - Added `swash` feature to enable rasterization of glyphs with swash instead of
@@ -316,4 +320,5 @@ All notable changes to this project will be documented in this file.
 [0.19.3]: https://github.com/femtovg/femtovg/releases/tag/v0.19.3
 [0.20.0]: https://github.com/femtovg/femtovg/releases/tag/v0.20.0
 [0.20.1]: https://github.com/femtovg/femtovg/releases/tag/v0.20.1
-[0.20.2]: https://github.com/femtovg/femtovg/releases/tag/v0.20.1
+[0.20.2]: https://github.com/femtovg/femtovg/releases/tag/v0.20.2
+[0.20.3]: https://github.com/femtovg/femtovg/releases/tag/v0.20.3
