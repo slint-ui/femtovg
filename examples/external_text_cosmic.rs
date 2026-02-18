@@ -1,6 +1,6 @@
 mod helpers;
 
-use cosmic_text::{Attrs, Buffer, CacheKey, FontSystem, Metrics, Shaping, SubpixelBin, SwashCache};
+use cosmic_text::{Attrs, Buffer, CacheKey, FontSystem, Metrics, Shaping, SubpixelBin, SwashCache, SwashContent};
 use femtovg::{
     Atlas, Canvas, Color, DrawCommand, GlyphDrawCommands, ImageFlags, ImageId, ImageSource, Paint, Quad, Renderer,
 };
@@ -14,7 +14,6 @@ use winit::{
 
 use imgref::{Img, ImgRef};
 use rgb::RGBA8;
-use swash::scale::image::Content;
 
 const TEXTURE_SIZE: usize = 512;
 
@@ -114,17 +113,17 @@ impl RenderCache {
 
                     let mut src_buf = Vec::with_capacity(content_w * content_h);
                     match rendered.content {
-                        Content::Mask => {
+                        SwashContent::Mask => {
                             for chunk in rendered.data.chunks_exact(1) {
                                 src_buf.push(RGBA8::new(chunk[0], 0, 0, 0));
                             }
                         }
-                        Content::Color => {
+                        SwashContent::Color => {
                             for chunk in rendered.data.chunks_exact(4) {
                                 src_buf.push(RGBA8::new(chunk[0], chunk[1], chunk[2], chunk[3]));
                             }
                         }
-                        Content::SubpixelMask => unreachable!(),
+                        SwashContent::SubpixelMask => unreachable!(),
                     }
                     canvas
                         .update_image::<ImageSource>(
@@ -143,7 +142,7 @@ impl RenderCache {
                         offset_y: rendered.placement.top,
                         atlas_x: atlas_alloc_x as u32,
                         atlas_y: atlas_alloc_y as u32,
-                        color_glyph: matches!(rendered.content, Content::Color),
+                        color_glyph: matches!(rendered.content, SwashContent::Color),
                     })
                 }) else {
                     continue;
