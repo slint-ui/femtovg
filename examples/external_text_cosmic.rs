@@ -83,6 +83,9 @@ impl RenderCache {
                     // pick an atlas texture for our glyph
                     let content_w = rendered.placement.width as usize;
                     let content_h = rendered.placement.height as usize;
+                    if content_w == 0 || content_h == 0 {
+                        return None;
+                    }
                     let mut found = None;
                     for (texture_index, glyph_atlas) in self.glyph_textures.iter_mut().enumerate() {
                         if let Some((x, y)) = glyph_atlas.atlas.add_rect(content_w, content_h) {
@@ -195,7 +198,7 @@ fn run<W: WindowSurface>(mut canvas: Canvas<W::Renderer>, el: EventLoop<()>, mut
     let mut buffer = Buffer::new(&mut font_system, Metrics::new(20.0, 25.0));
     let mut cache = RenderCache::new();
 
-    buffer.set_text(&mut font_system, LOREM_TEXT, Attrs::new(), Shaping::Advanced);
+    buffer.set_text(&mut font_system, LOREM_TEXT, &Attrs::new(), Shaping::Advanced);
     el.run(move |event, event_loop_window_target| {
         event_loop_window_target.set_control_flow(winit::event_loop::ControlFlow::Poll);
 
