@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.20.2] - 2026-02-18
+
+- Added `swash` feature to enable rasterization of glyphs with swash instead of
+  the built-in path renderer.
+
 ## [0.20.1] - 2026-01-15
 
 - Lowered MSRV requirement as it's only opt-in via wgpu feature.
@@ -311,3 +316,4 @@ All notable changes to this project will be documented in this file.
 [0.19.3]: https://github.com/femtovg/femtovg/releases/tag/v0.19.3
 [0.20.0]: https://github.com/femtovg/femtovg/releases/tag/v0.20.0
 [0.20.1]: https://github.com/femtovg/femtovg/releases/tag/v0.20.1
+[0.20.2]: https://github.com/femtovg/femtovg/releases/tag/v0.20.1
