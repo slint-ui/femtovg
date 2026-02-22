@@ -725,20 +725,39 @@ impl GlyphAtlas {
 
         let is_color = image.content == swash::scale::image::Content::Color;
 
-        let pixels: Vec<rgb::RGBA8> = if is_color {
-            image
-                .data
-                .chunks_exact(4)
-                .map(|c| rgb::RGBA8::new(c[0], c[1], c[2], c[3]))
-                .collect()
+        // Create a padded image with zeroed borders to avoid sampling undefined
+        // texture data at glyph edges (the atlas texture is not zero-initialized).
+        let padded_width = (glyph_width + 2 * GLYPH_PADDING) as usize;
+        let padded_height = (glyph_height + 2 * GLYPH_PADDING) as usize;
+        let mut pixels = vec![rgb::RGBA8::new(0, 0, 0, 0); padded_width * padded_height];
+
+        if is_color {
+            for y in 0..glyph_height as usize {
+                for x in 0..glyph_width as usize {
+                    let src_idx = (y * glyph_width as usize + x) * 4;
+                    let dst_idx = (y + GLYPH_PADDING as usize) * padded_width + x + GLYPH_PADDING as usize;
+                    pixels[dst_idx] = rgb::RGBA8::new(
+                        image.data[src_idx],
+                        image.data[src_idx + 1],
+                        image.data[src_idx + 2],
+                        image.data[src_idx + 3],
+                    );
+                }
+            }
         } else {
-            image.data.iter().map(|&a| rgb::RGBA8::new(a, 0, 0, 0)).collect()
-        };
+            for y in 0..glyph_height as usize {
+                for x in 0..glyph_width as usize {
+                    let src_idx = y * glyph_width as usize + x;
+                    let dst_idx = (y + GLYPH_PADDING as usize) * padded_width + x + GLYPH_PADDING as usize;
+                    pixels[dst_idx] = rgb::RGBA8::new(image.data[src_idx], 0, 0, 0);
+                }
+            }
+        }
 
-        let target_x = dst_x + GLYPH_MARGIN as usize + GLYPH_PADDING as usize;
-        let target_y = dst_y + GLYPH_MARGIN as usize + GLYPH_PADDING as usize;
+        let target_x = dst_x + GLYPH_MARGIN as usize;
+        let target_y = dst_y + GLYPH_MARGIN as usize;
 
-        let img = imgref::Img::new(&pixels[..], glyph_width as usize, glyph_height as usize);
+        let img = imgref::Img::new(&pixels[..], padded_width, padded_height);
         canvas.update_image(dst_image_id, crate::image::ImageSource::from(img), target_x, target_y)?;
 
         Ok(Some(RenderedGlyph {
