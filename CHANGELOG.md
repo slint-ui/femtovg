@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.20.4] - 2026-02-23
+
+- Fix occasional fringes around swash rendered glyphs caused by uninitialized
+  padding.
+- Ported examples to latest winit/glutin/parley/cosmic-text versions.
+
 ## [0.20.3] - 2026-02-18
 
 - Upgraded swash to the latest version.
@@ -322,3 +328,4 @@ All notable changes to this project will be documented in this file.
 [0.20.1]: https://github.com/femtovg/femtovg/releases/tag/v0.20.1
 [0.20.2]: https://github.com/femtovg/femtovg/releases/tag/v0.20.2
 [0.20.3]: https://github.com/femtovg/femtovg/releases/tag/v0.20.3
+[0.20.4]: https://github.com/femtovg/femtovg/releases/tag/v0.20.4
