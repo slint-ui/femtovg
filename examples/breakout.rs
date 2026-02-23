@@ -5,8 +5,8 @@ use std::sync::Arc;
 use femtovg::{Align, Baseline, Canvas, Color, FontId, ImageFlags, ImageId, Paint, Path, Renderer};
 use instant::Instant;
 use rand::{
-    distributions::{Distribution, Standard},
-    prelude::*,
+    distr::{Distribution, StandardUniform},
+    RngExt,
 };
 use resource::resource;
 use winit::{
@@ -398,10 +398,10 @@ impl Game {
             if self.paddle_rect.intersects(&powerup.rect) {
                 powerup.rect.origin.y += 10000.0;
 
-                let mut rng = thread_rng();
+                let mut rng = rand::rng();
 
-                let x: f32 = rng.gen_range(150.0..250.0);
-                let y: f32 = rng.gen_range(-350.0..-250.0);
+                let x: f32 = rng.random_range(150.0..250.0);
+                let y: f32 = rng.random_range(-350.0..-250.0);
 
                 match powerup.ty {
                     PowerupType::Multiply => {
@@ -753,9 +753,9 @@ enum PowerupType {
     Live,
 }
 
-impl Distribution<PowerupType> for Standard {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> PowerupType {
-        match rng.gen_range(0..7) {
+impl Distribution<PowerupType> for StandardUniform {
+    fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> PowerupType {
+        match rng.random_range(0..7) {
             0 => PowerupType::Enlarge,
             1 => PowerupType::Shrink,
             3 => PowerupType::Slow,

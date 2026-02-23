@@ -60,7 +60,7 @@ swash = ["dep:swash"]
 [dev-dependencies]
 winit = { version = "0.30.12" }
 euclid = "0.22.3"
-rand = "0.8"
+rand = "0.10"
 usvg = { version = "0.47.0" }
 instant = { version = "0.1", features = ["now"] }
 resource = "0.6.1"
@@ -88,7 +88,7 @@ web_sys = { version = "0.3", package = "web-sys", features = [
 console_error_panic_hook = "0.1.5"
 instant = { version = "0.1", features = ["wasm-bindgen", "now"] }
 resource = { version = "0.6.1", features = ["force-static"] }
-getrandom = { version = "0.2.2", features = ["js"] }
+getrandom = { version = "0.4.1", features = ["wasm_js"] }
 wgpu = { version = "28", features = ["webgl"] }
 wasm-bindgen-futures = { version = "0.4.45" }
 
