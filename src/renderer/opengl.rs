@@ -53,6 +53,7 @@ pub struct OpenGl {
     context: Rc<glow::Context>,
     screen_target: Option<Framebuffer>,
     current_render_target: RenderTarget,
+    blur_buffer: Option<ImageId>,
 }
 
 impl OpenGl {
@@ -205,6 +206,7 @@ impl OpenGl {
             context,
             screen_target: None,
             current_render_target: RenderTarget::Screen,
+            blur_buffer: None,
         };
 
         unsafe {
@@ -634,7 +636,20 @@ impl OpenGl {
         // on the number of iterations in the fragment shader.
         blur_params.image_blur_filter_sigma = sigma.min(8.);
 
-        let horizontal_blur_buffer = images.alloc(self, source_image_info).unwrap();
+        let horizontal_blur_buffer = match self.blur_buffer {
+            Some(id) if images.info(id).as_ref() == Some(&source_image_info) => id,
+            Some(id) => {
+                images.remove(self, id);
+                let new_id = images.alloc(self, source_image_info).unwrap();
+                self.blur_buffer = Some(new_id);
+                new_id
+            }
+            None => {
+                let new_id = images.alloc(self, source_image_info).unwrap();
+                self.blur_buffer = Some(new_id);
+                new_id
+            }
+        };
         self.set_target(images, RenderTarget::Image(horizontal_blur_buffer));
         self.main_program().set_view(self.view);
 
@@ -664,8 +679,6 @@ impl OpenGl {
         cmd.image = Some(horizontal_blur_buffer);
 
         self.triangles(images, &cmd, &blur_params);
-
-        images.remove(self, horizontal_blur_buffer);
 
         // restore previous render target and view
         self.set_target(images, original_render_target);
